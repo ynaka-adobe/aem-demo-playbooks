@@ -17,7 +17,7 @@ time the user merges demo customizations back into it so it accumulates reusable
 
 ## How to run this
 
-- **Ask with clickable dialogs.** Whenever you need input or a choice from the user (starter, template name), ask
+- **MANDATORY — ask with clickable dialogs.** You MUST call the AskUserQuestion tool for these and NEVER present a numbered/bulleted prose option list. Whenever you need input or a choice from the user (starter, template name), ask
   via a clickable AskUserQuestion dialog — use the free-text box for open answers and options for choices — instead
   of prose questions.
 - Adapt to your environment: if you have terminal tools, run checks and (with a clear go-ahead) create the repo with

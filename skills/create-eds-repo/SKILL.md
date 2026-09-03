@@ -12,9 +12,12 @@ hands off to Path A or Path B.
 
 ## How to run this
 
-- **Ask with clickable dialogs.** Whenever you need input or a choice from the user (site name, template, owner,
-  the Path A vs B fork), ask via a clickable AskUserQuestion dialog — use the free-text box for open answers (like a
-  site name) and options for choices — instead of prose questions.
+> **MANDATORY — ask with clickable dialogs.** For EVERY question, choice, or input in this skill (site name,
+> template, owner, **seeding method**, the Path A vs B fork), you MUST call the **AskUserQuestion** tool — options
+> for choices, the free-text box for open answers like a site name. **NEVER** present choices as a numbered or
+> bulleted prose list, and never ask the user to reply in plain text. If you are about to type "Option 1… Option 2…"
+> in prose, stop and use AskUserQuestion instead.
+
 - Adapt to your environment: if you have terminal/browsing tools, run checks, create the repo with `gh`, and fetch
   the preview URL yourself (with a clear go-ahead); otherwise give exact browser clicks and have the user report.
 - One step at a time; confirm before moving on. Explain *why* in one sentence.
@@ -81,19 +84,22 @@ Path B builds integrations on it.
 **Content gate** — first check whether content already exists (list the DA sources for the new site, or fetch the
 preview URL for HTTP 200). If it already has content, skip this phase.
 
-**Preferred — AEM DA content tools (when the DA MCP is connected):** copy is **cross-org**, and `da_copy_content`
-only works *within* one site, so **read from the source and write to the new site**:
-- Source (`da_list_sources` / `da_get_source`): org `ynaka-adobe`, repo `da-demo-kit` — root files `index.html`,
-  `nav.html`, `footer.html`, `metadata.json`, plus the `docs/` folder.
-- Destination (`da_create_source`): org `<owner>`, repo `<demo>`, same paths.
+**Ask how to seed via an AskUserQuestion dialog** (never prose). Present these options, in this order:
 
-**Browser fallback (always works):**
-- In `da.live`, open `https://da.live/#/ynaka-adobe/da-demo-kit`, select the pages → **Copy** → open
-  `https://da.live/#/<owner>/<demo>` → **Paste**; **or**
-- `https://da.live/start` → enter the repo → **Go** → step 2 select **AEM Block Collection** (do NOT use Author Kit
-  with this template) → creates the same sample pages.
+1. **Copy from da-demo-kit via DA tools (Recommended)** — the default when the **AEM DA MCP is connected**. Because
+   the copy is cross-org and `da_copy_content` only works *within* one site, do it as **read + write**: from
+   `ynaka-adobe/da-demo-kit` read `index.html`, `nav.html`, `footer.html`, `metadata.json`, and the `docs/` folder
+   (`da_list_sources` / `da_get_source`), then write each to `<owner>/<demo>` at the same path (`da_create_source`).
+   If the DA MCP is connected, recommend this and offer to run it now yourself.
+2. **da.live/start → AEM Block Collection** — browser wizard: `https://da.live/start` → enter the repo → **Go** →
+   step 2 select **AEM Block Collection** (do NOT use Author Kit) → creates the same sample pages.
+3. **Manual browser copy/paste** — in `da.live`, open `https://da.live/#/ynaka-adobe/da-demo-kit`, select the pages
+   → **Copy** → open `https://da.live/#/<owner>/<demo>` → **Paste**.
 
-**Publish** the seeded pages (Traverse → Bulk Operations → **Publish**; *confirm before publishing — it's public*),
+> If the AEM DA MCP is **not** connected, still show option 1 but note it's unavailable until they connect it (see
+> the `eds-readiness` skill), and default the recommendation to option 2.
+
+After seeding, **publish** (Traverse → Bulk Operations → **Publish**; *confirm before publishing — it's public*),
 then **verify** `https://main--<demo>--<owner>.aem.page/` returns HTTP 200 with the homepage.
 
 ## Phase 5 — Fork: state your intention

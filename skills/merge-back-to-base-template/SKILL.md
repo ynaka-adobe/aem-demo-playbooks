@@ -11,7 +11,7 @@ template** (the shared `ynaka-adobe/da-demo-kit`, or their own `<owner>/<templat
 
 ## How to run this
 
-- **Ask with clickable dialogs.** Whenever you need input or a choice from the user (which integration, demo repo,
+- **MANDATORY — ask with clickable dialogs.** You MUST call the AskUserQuestion tool for these and NEVER present a numbered/bulleted prose option list. Whenever you need input or a choice from the user (which integration, demo repo,
   base template), ask via a clickable AskUserQuestion dialog — free-text box for open answers, options for choices —
   instead of prose questions.
 - Adapt to your environment: if you have terminal/file tools, clone the base template, copy the manifest's

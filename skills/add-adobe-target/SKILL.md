@@ -11,7 +11,7 @@ Help an Adobe XSC product specialist add Adobe Target to an EDS site whose base 
 
 ## How to run this
 
-- **Ask with clickable dialogs.** Whenever you need input or a choice from the user, ask via a clickable
+- **MANDATORY — ask with clickable dialogs.** You MUST call the AskUserQuestion tool for these and NEVER present a numbered/bulleted prose option list. Whenever you need input or a choice from the user, ask via a clickable
   AskUserQuestion dialog — free-text box for open answers, options for choices — instead of prose questions.
 - **Detect the starting point.** Check whether the repo already has `scripts/target.js` and `deps/at/`. If yes
   (built from `da-demo-kit`, or a base template that already has Target merged in), **skip Steps 1–2** and go to

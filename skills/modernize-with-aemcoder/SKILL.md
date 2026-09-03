@@ -14,7 +14,7 @@ copy-paste prompts, confirm each step, and troubleshoot.
 
 ## How to run this
 
-- **Ask with clickable dialogs.** Whenever you need input or a choice from the user (source URL, page URLs,
+- **MANDATORY — ask with clickable dialogs.** You MUST call the AskUserQuestion tool for these and NEVER present a numbered/bulleted prose option list. Whenever you need input or a choice from the user (source URL, page URLs,
   first-time vs returning, "migrate more pages?"), ask via a clickable AskUserQuestion dialog — free-text box for
   open answers, options for choices — instead of prose questions.
 - One phase at a time; wait for confirmation. Explain *why* in one sentence. Put every URL and prompt in its own

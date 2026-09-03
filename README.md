@@ -15,6 +15,7 @@ Guided playbooks for building **AEM Edge Delivery (EDS) demos**, packaged as ins
 | **add-adobe-target** | **Path B example:** add Adobe Target to a demo. Ends with a MANIFEST for reuse. |
 | **sync-da-content** | Sync the Adobe Target credentials sheet from da-demo-kit to your target DA repo. Automated one-click population. |
 | **merge-back-to-base-template** | Fold a completed integration into your base template so future demos inherit it. |
+| **update-aem-playbooks** | Update this plugin to the latest version — say "update the demo playbooks", then restart. |
 
 ## The two forks
 

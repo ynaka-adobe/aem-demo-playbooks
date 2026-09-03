@@ -12,6 +12,9 @@ hands off to Path A or Path B.
 
 ## How to run this
 
+- **Ask with clickable dialogs.** Whenever you need input or a choice from the user (site name, template, owner,
+  the Path A vs B fork), ask via a clickable AskUserQuestion dialog — use the free-text box for open answers (like a
+  site name) and options for choices — instead of prose questions.
 - Adapt to your environment: if you have terminal/browsing tools, run checks, create the repo with `gh`, and fetch
   the preview URL yourself (with a clear go-ahead); otherwise give exact browser clicks and have the user report.
 - One step at a time; confirm before moving on. Explain *why* in one sentence.

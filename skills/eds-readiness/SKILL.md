@@ -10,6 +10,9 @@ AEM Edge Delivery demos. This is **setup only**; building a demo is the `create-
 
 ## How to run this
 
+- **Ask with clickable dialogs.** Whenever you need input or a choice from the user, ask via a clickable
+  AskUserQuestion dialog — use the free-text box for open answers (like a site name) and options for choices —
+  instead of prose questions.
 - Adapt to your environment: if you have terminal/file tools, run the version checks yourself and report ✅ / ❌.
   If you can't run commands, ask the user to run each and paste the output, then interpret it. Give the fix for
   anything missing.

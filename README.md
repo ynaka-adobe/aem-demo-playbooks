@@ -31,10 +31,28 @@ the feature.
 1. **eds-readiness** (once) → 2. optionally **create-base-template** (once) → 3. **create-eds-repo** per demo →
 4. **sync-da-content** (populate shared content) → 5. **modernize-with-aemcoder** *or* **add-adobe-target** → 6. **merge-back-to-base-template** for anything reusable.
 
-## Install
+## Install (one time)
 
-Accept the `.plugin` file when it appears in chat, or add it via your Claude Code plugin settings. Then just
-describe what you want — e.g. "get me set up for EDS demos" or "start a new demo" — and the matching skill runs.
+In an interactive Claude Code terminal, run:
+
+```bash
+claude plugin marketplace add ynaka-adobe/aem-demo-playbooks
+claude plugin install aem-demo-playbooks@ynaka-adobe
+```
+
+Then **restart Claude Code**. After that, just describe what you want — e.g. "get me set up for EDS demos" or
+"start a new demo" — and the matching skill runs.
+
+## Updating (when a new version ships)
+
+Installing does **not** auto-update. When you hear a new skill/feature is out but you don't see it, run:
+
+```bash
+claude plugin marketplace update ynaka-adobe && claude plugin update aem-demo-playbooks@ynaka-adobe
+```
+
+Then **restart Claude Code**. That's it — refresh the catalog, update the plugin, restart. (Skills load at startup,
+so the restart is required.)
 
 ## Notes
 
@@ -52,5 +70,8 @@ after cloning:
 git config core.hooksPath .githooks
 ```
 
-Then the normal loop is just: edit → `git commit` (version auto-bumps) → `git push`. To pull the update locally:
-`claude plugin marketplace update ynaka-adobe && claude plugin update aem-demo-playbooks@ynaka-adobe`, then restart.
+Then the loop is: **edit → `git commit`** (version auto-bumps) **→ `./sync.sh`** → **restart Claude Code**.
+
+`./sync.sh` does the three easy-to-forget steps in one shot: `git push`, refresh the marketplace, and update your
+local install. Restart is the only manual step after it (skills load at startup). Teammates who just consume the
+plugin update the same way: `claude plugin marketplace update ynaka-adobe && claude plugin update aem-demo-playbooks@ynaka-adobe`, then restart.

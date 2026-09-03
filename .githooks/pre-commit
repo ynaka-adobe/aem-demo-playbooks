@@ -1,0 +1,21 @@
+#!/bin/sh
+# Auto-bump the patch version in .claude-plugin/plugin.json on every commit,
+# so each GitHub update carries a new version and `claude plugin update` always
+# picks it up. Enable once per clone: git config core.hooksPath .githooks
+set -e
+
+MANIFEST=".claude-plugin/plugin.json"
+[ -f "$MANIFEST" ] || exit 0
+
+cur=$(grep -oE '"version"[[:space:]]*:[[:space:]]*"[0-9]+\.[0-9]+\.[0-9]+"' "$MANIFEST" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+[ -n "$cur" ] || exit 0
+
+major=$(printf '%s' "$cur" | cut -d. -f1)
+minor=$(printf '%s' "$cur" | cut -d. -f2)
+patch=$(printf '%s' "$cur" | cut -d. -f3)
+new="$major.$minor.$((patch + 1))"
+
+sed -i.bak "s/\"version\"[[:space:]]*:[[:space:]]*\"$cur\"/\"version\": \"$new\"/" "$MANIFEST"
+rm -f "$MANIFEST.bak"
+git add "$MANIFEST"
+echo "pre-commit: bumped plugin version $cur -> $new"

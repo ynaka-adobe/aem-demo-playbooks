@@ -41,3 +41,16 @@ describe what you want — e.g. "get me set up for EDS demos" or "start a new de
 - Internal to Adobe: references aemcoder.adobe.io, da-demo-kit, and the shared acsmarketing Target instance.
 - A GitHub org / `-adobe` naming is **not** required — repos live under your personal account, and your demo admin
   is set in the AEM Code Sync bot wizard's **Users** step.
+
+## Contributing / versioning
+
+Every change must bump the version in `.claude-plugin/plugin.json`, or `claude plugin update` won't pick it up.
+This repo automates that with a **pre-commit hook** that increments the patch version on each commit. Enable it once
+after cloning:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Then the normal loop is just: edit → `git commit` (version auto-bumps) → `git push`. To pull the update locally:
+`claude plugin marketplace update ynaka-adobe && claude plugin update aem-demo-playbooks@ynaka-adobe`, then restart.

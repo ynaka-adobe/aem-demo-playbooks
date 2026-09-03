@@ -1,0 +1,16 @@
+{
+  "name": "ynaka-adobe",
+  "owner": {
+    "name": "Adobe XSC"
+  },
+  "metadata": {
+    "description": "Adobe XSC marketplace — AI playbooks and tools for building AEM Edge Delivery demos."
+  },
+  "plugins": [
+    {
+      "name": "aem-demo-playbooks",
+      "source": "./",
+      "description": "Guided playbooks for building AEM Edge Delivery (EDS) demos: readiness, base template, repo creation, aemcoder modernization, Adobe Target, and merge-back."
+    }
+  ]
+}

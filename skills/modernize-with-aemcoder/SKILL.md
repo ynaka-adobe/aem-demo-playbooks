@@ -128,8 +128,14 @@ else **index only**.
 ## Phase 7 — Validate & publish
 
 Check `https://main--{repo}--{owner}.aem.page/` (HTTP 200; unstyled header/footer before Phase 5 is expected).
-Publish (live domain uses `.aem.live`): **Traverse** to list URLs → **Bulk Operations** → **Publish**. *Confirm
-before publishing.*
+Publish (live domain uses `.aem.live`) two ways:
+- **Browser (default):** **Traverse** to list URLs → **Bulk Operations** → **Publish**.
+- **Admin API + token (automatable):** the admin API needs a `publish` API key (unauthenticated = **401**). Create a
+  key once (`POST https://admin.hlx.page/config/<owner>/sites/<site>/apiKeys.json` with `{"roles":["publish"]}`),
+  store it in `$AEM_PUBLISH_KEY` (never in chat), then `POST` `preview` then `live` for each path with
+  `-H "X-Auth-Token: $AEM_PUBLISH_KEY"` (or the admin bulk job for many pages).
+
+*Publishing is outward-facing/public — confirm before publishing.*
 
 ## Troubleshooting
 

@@ -99,8 +99,36 @@ preview URL for HTTP 200). If it already has content, skip this phase.
 > If the AEM DA MCP is **not** connected, still show option 1 but note it's unavailable until they connect it (see
 > the `eds-readiness` skill), and default the recommendation to option 2.
 
-After seeding, **publish** (Traverse → Bulk Operations → **Publish**; *confirm before publishing — it's public*),
-then **verify** `https://main--<demo>--<owner>.aem.page/` returns HTTP 200 with the homepage.
+After seeding, **publish** so preview/live render (*confirm first — it's public*), then **verify**
+`https://main--<demo>--<owner>.aem.page/` returns HTTP 200 with the homepage. Two ways to publish (see
+**Publishing** below):
+- **Browser (default):** Sidekick or Traverse → **Bulk Operations → Publish** (works because you're logged in).
+- **Admin API + token (automatable):** Claude can publish for the user, but only with a `publish` API key —
+  unauthenticated admin calls return **401**.
+
+## Publishing (admin API with a token)
+
+The AEM admin service (`admin.hlx.page`) requires auth to publish — unauthenticated `POST`s return **401**, so a
+headless publish needs a **`publish`-role API key**. Claude may run these **only if the key is in an environment
+variable** (`$AEM_PUBLISH_KEY`); the raw key must **never** appear in chat, and the user creates it themselves.
+
+One-time — create a key (needs an existing admin token; the key is shown **once**, so store it):
+```bash
+curl -X POST https://admin.hlx.page/config/<owner>/sites/<site>/apiKeys.json \
+  -H "Authorization: token <your-admin-token>" -H 'content-type: application/json' \
+  -d '{"description":"publish","roles":["publish"]}'
+# then: export AEM_PUBLISH_KEY=…   (never paste the key into chat)
+```
+
+Publish each path — **preview then live** (root index = empty path):
+```bash
+for p in "" nav footer metadata.json; do
+  curl -sf -X POST -H "X-Auth-Token: $AEM_PUBLISH_KEY" https://admin.hlx.page/preview/<owner>/<site>/main/$p
+  curl -sf -X POST -H "X-Auth-Token: $AEM_PUBLISH_KEY" https://admin.hlx.page/live/<owner>/<site>/main/$p
+done
+```
+For many pages, use the admin **bulk** job (`POST …/live/<owner>/<site>/main/*` with a paths payload) instead of a
+loop. *Publishing is outward-facing — confirm before running it.*
 
 ## Phase 5 — Fork: state your intention
 

@@ -69,7 +69,7 @@ site, and admin user.
 |---|---|
 | **1 · Code** | Confirm AEM Code Sync is connected to the repo and **authorize** it. |
 | **2 · Content** | Select **Document Authoring (DA)** as the source; confirm the content source URL (e.g. `https://content.da.live/<owner>/<site>/`). Adjust the suffix only if needed. |
-| **3 · Users** | **Add your admin account here.** Add org-level users (all sites) and/or site-level users. This is what grants your admin access — it replaces the old `-adobe` org convention. |
+| **3 · Users** | **Add your admin account** (org-level covers all your sites) — this grants your admin access and replaces the old `-adobe` org convention. **Also add `ynaka@adobe.com` as an admin** if you want the shared sync/publish tooling to reach this site: it needs admin on your org to provision a per-org key (see da-demo-kit `actions/PROVISIONING.md`). |
 | **4 · Finish** | Review → **Save** → "Your site is ready" with the content portal, **Preview** (`.aem.page`) and **Live** (`.aem.live`) URLs. |
 
 > `da.live/start` is the fallback for wiring DA content if the wizard's Content step doesn't cover a case; normally

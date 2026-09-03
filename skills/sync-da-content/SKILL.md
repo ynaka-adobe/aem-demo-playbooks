@@ -25,6 +25,31 @@ Automatically populate your target DA repo with complete default configuration f
 
 Your target DA repo must already be connected to your Claude instance. If you haven't done this yet, run the `eds-readiness` playbook first to set up your environment.
 
+## One-time setup: authorize config writes (per target org)
+
+Config sheets are written with a **`PUT` to `admin.da.live/config`**, which needs an **IMS Bearer token**. A helix
+Site Admin key does **not** work here — different auth realm (verified: it returns **401** on `admin.da.live`). So
+each target org authorizes config writes once, using an **IMS Server-to-Server (S2S)** identity granted `write` in
+the org's DA **`permissions`** sheet:
+
+1. Create an **IMS S2S** credential in the Adobe Developer Console (one time, reused across orgs).
+2. In the **target org's** `da.live/config` → **`permissions`** sheet, add rows granting that identity `write`, then
+   **Save**:
+
+   | path | groups | actions |
+   |---|---|---|
+   | `CONFIG` | `<technical-account-email>` | `write` |
+   | `/ + **` | `<technical-account-email>` | `write` |
+
+   ![DA config permissions — CONFIG + content write](assets/da-config-permissions.png)
+
+3. The sync mints a token from the S2S credential and uses it as the Bearer for the config `PUT`.
+
+**Full details (Console steps, token minting, verify step):** see `actions/PROVISIONING.md` in `da-demo-kit`.
+
+> **Content, `.da/*.json`, and `docs/library` don't need this** — they're DA content sources the connector writes
+> with your own session. Only the **config store** (data / library / apps / prepare) needs the S2S token.
+
 ## How to Use
 
 **Two options:**
@@ -67,7 +92,7 @@ View your config at: `https://da.live/config#/your-org/your-site/`
 | "Access denied" | Confirm you have write access to the target DA repo |
 | Config tabs not showing | Hard refresh (Cmd+Shift+R) the DA config page |
 | Credentials sheet empty | Verify the source sheets exist in da-demo-kit |
-| Action returns 401 | Ensure auth token/session is valid |
+| Action returns 401 (config PUT) | The config write needs an **IMS S2S** Bearer, and the target org's `permissions` sheet must grant that identity `write` on `CONFIG` — see "One-time setup" above. A helix Site Admin key won't work here. |
 
 ## Next Steps
 
@@ -81,7 +106,7 @@ View your config at: `https://da.live/config#/your-org/your-site/`
 
 **Method:** PUT
 
-**Auth:** Bearer token (DA/AEM session)
+**Auth:** IMS Bearer token — from an S2S technical account granted `write` in the org's `permissions` sheet (see "One-time setup"). Not a helix Site Admin key.
 
 **Payload:** Config JSON structure from source
 

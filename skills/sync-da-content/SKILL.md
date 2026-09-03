@@ -1,67 +1,88 @@
 ---
 name: sync-da-content
-description: Sync Adobe Target credentials sheet from da-demo-kit source to a target DA repo in any org/site. Reads the shared clientID/secret sheet and populates it to the target. Use when an end user says "sync content from da-demo-kit", "copy the Target sheet", or "populate my repo with shared credentials".
+description: Sync full DA config + credentials from da-demo-kit to target repos. Syncs all config sheets (data, library, apps, prepare) plus Adobe Target and Workfront credentials. Use when an end user says "sync content from da-demo-kit", "set up my repo config", or "populate my site with default config".
 ---
 
 # Sync Content from da-demo-kit to Your DA Repo
 
-Automatically copy the Adobe Target credentials sheet (`.da/adobe-target`) from the canonical source (`ynaka-adobe/da-demo-kit`) to your target DA repo in any org/site.
+Automatically populate your target DA repo with complete default configuration from `ynaka-adobe/da-demo-kit`, including all config sheets and integration credentials.
+
+## What Gets Synced
+
+**Full Configuration:**
+- **data** — Tool configuration (Send to Adobe Target, Send to Marketo, Change Target Offer, Send for Approval)
+- **library** — Blocks, Templates, Icons, Generate Variations, Adobe Target, Adobe Workfront, CMC Management Tool
+- **apps** — Content Syndication, Site Creator, Demo App
+- **prepare** — Preparation workflow configuration
+
+**Credentials & Config:**
+- `.da/adobe-target.json` — Adobe Target clientId, clientSecret, tenant
+- `.da/adobe-workfront.json` — Adobe Workfront configuration
+- `metadata.json` — Site metadata
+- `.da/aem-permission-requests.json` — Permission request templates
 
 ## Prerequisites
 
 Your target DA repo must already be connected to your Claude instance. If you haven't done this yet, run the `eds-readiness` playbook first to set up your environment.
 
-## How to use this playbook
+## How to Use
 
-**The playbook is fully automated** — you just provide your target org and site name, and it handles the rest:
+**Two options:**
 
-1. Ask for the target **org** (GitHub organization) and **site** (repository name)
-2. Fetch the Adobe Target sheet from the source (`ynaka-adobe/da-demo-kit/.da/adobe-target`)
-3. Write it to your target repo at `.da/adobe-target`
-4. Confirm the sync completed
+### Option 1: Full Config Sync (Recommended)
+Syncs all default configuration in one call:
+```
+https://da-demo-kit.hlx.live/actions/sync-config?targetOrg=your-org&targetRepo=your-site
+```
 
-## Step 1 — Provide your target repo details
+### Option 2: Individual Sheet Sync
+Sync specific sheets as needed:
+```
+https://da-demo-kit.hlx.live/actions/sync-da-sheet?targetOrg=your-org&targetRepo=your-site&sheetPath=.da/adobe-target.json
+```
 
-You'll be asked for:
-- **Org:** your GitHub organization (e.g., `my-company-org`)
-- **Site:** your DA site repository name (e.g., `my-demo-site`)
+## Web UI Alternative
 
-Example: org=`my-company-org`, site=`my-demo-site` syncs to `https://da.live/sheet#/my-company-org/my-demo-site/.da/adobe-target.json`
+Navigate to: `https://da-demo-kit.hlx.live/sync-content`
 
-## What gets copied
+Fill in:
+- **Organization** — your GitHub org
+- **Repository** — your site name
+- **What to Sync** — Full Config or Single Sheet
 
-The `.da/adobe-target.json` sheet containing:
-- Adobe Target `clientId`
-- Adobe Target `clientSecret`
-- Adobe Target `tenant` (acsmarketing)
+## After Sync
 
-**These are shared by all end users** — no per-user customization needed.
+Your target repo will have:
+- ✅ All config tabs ready in DA workspace
+- ✅ Target and Workfront credentials configured
+- ✅ Library sheets with blocks, templates, icons
+- ✅ App integrations ready to use
 
-## After sync
-
-Once the sheet is in your repo, you can:
-- Reference it in your demo site using the DA sheet API
-- Use the credentials in Target integrations, personalizations, or experiences
-- Link to it in your site's DA workspace
+View your config at: `https://da.live/config#/your-org/your-site/`
 
 ## Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
-| "Target repo not connected" | Run `eds-readiness` first to set up your DA connection |
-| Sync says "access denied" | Confirm you have write access to the target DA repo |
-| Sheet doesn't appear after sync | Refresh your DA workspace, or check the target org/site name was correct |
-| Credentials sheet is empty | The source (`ynaka-adobe/da-demo-kit/.da/adobe-target.json`) may not have content yet |
+| "Access denied" | Confirm you have write access to the target DA repo |
+| Config tabs not showing | Hard refresh (Cmd+Shift+R) the DA config page |
+| Credentials sheet empty | Verify the source sheets exist in da-demo-kit |
+| Action returns 401 | Ensure auth token/session is valid |
 
-## Next steps
+## Next Steps
 
-- **Use the sheet in your site:** reference `.da/adobe-target` in your DA content or code
-- **Sync other content:** contact your admin if you need to sync additional sheets or pages
+- **View your config:** `https://da.live/config#/your-org/your-site/`
+- **Use the credentials:** Reference sheets in your DA content or integrations
+- **Customize:** Edit sheets in DA UI to customize for your needs
 
-## For admins: Adding more content to sync
+## API Reference
 
-To expand what this playbook syncs, edit this file and add more paths to Step 2. Example:
-```
-- Source: ynaka-adobe/da-demo-kit/.da/adobe-workfront.json
-- Target: [your-org]/[your-site]/.da/adobe-workfront.json
-```
+**Endpoint:** `https://admin.da.live/config/{org}/{repo}/`
+
+**Method:** PUT
+
+**Auth:** Bearer token (DA/AEM session)
+
+**Payload:** Config JSON structure from source
+
+See `SYNC_README.md` in da-demo-kit for complete API documentation.

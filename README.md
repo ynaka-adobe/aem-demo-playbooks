@@ -13,6 +13,7 @@ Guided playbooks for building **AEM Edge Delivery (EDS) demos**, packaged as ins
 | **create-eds-repo** | Base for every demo: repo from template → AEM Code Sync → bot setup wizard (content repo + site + admin) → **fork** to Path A or B. |
 | **modernize-with-aemcoder** | **Path A:** migrate a real site's pages, design & content with the Experience Modernization Agent (aemcoder.adobe.io). |
 | **add-adobe-target** | **Path B example:** add Adobe Target to a demo. Ends with a MANIFEST for reuse. |
+| **sync-da-content** | Sync the Adobe Target credentials sheet from da-demo-kit to your target DA repo. Automated one-click population. |
 | **merge-back-to-base-template** | Fold a completed integration into your base template so future demos inherit it. |
 
 ## The two forks
@@ -28,7 +29,7 @@ the feature.
 ## Typical flow
 
 1. **eds-readiness** (once) → 2. optionally **create-base-template** (once) → 3. **create-eds-repo** per demo →
-4. **modernize-with-aemcoder** *or* **add-adobe-target** → 5. **merge-back-to-base-template** for anything reusable.
+4. **sync-da-content** (populate shared content) → 5. **modernize-with-aemcoder** *or* **add-adobe-target** → 6. **merge-back-to-base-template** for anything reusable.
 
 ## Install
 

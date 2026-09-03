@@ -72,25 +72,44 @@ site, and admin user.
 > `da.live/start` is the fallback for wiring DA content if the wizard's Content step doesn't cover a case; normally
 > the wizard is the primary path.
 
-## Phase 4 — Fork: state your intention
+## Phase 4 — Seed default content (from da-demo-kit)
 
-The base is done. Ask which path the user wants:
+Every new demo's content repo starts **empty**, so the preview is blank until seeded. Seed it with da-demo-kit's
+sample content (homepage, nav, footer) so the demo renders immediately — Path A then migrates real content over it;
+Path B builds integrations on it.
+
+**Content gate** — first check whether content already exists (list the DA sources for the new site, or fetch the
+preview URL for HTTP 200). If it already has content, skip this phase.
+
+**Preferred — AEM DA content tools (when the DA MCP is connected):** copy is **cross-org**, and `da_copy_content`
+only works *within* one site, so **read from the source and write to the new site**:
+- Source (`da_list_sources` / `da_get_source`): org `ynaka-adobe`, repo `da-demo-kit` — root files `index.html`,
+  `nav.html`, `footer.html`, `metadata.json`, plus the `docs/` folder.
+- Destination (`da_create_source`): org `<owner>`, repo `<demo>`, same paths.
+
+**Browser fallback (always works):**
+- In `da.live`, open `https://da.live/#/ynaka-adobe/da-demo-kit`, select the pages → **Copy** → open
+  `https://da.live/#/<owner>/<demo>` → **Paste**; **or**
+- `https://da.live/start` → enter the repo → **Go** → step 2 select **AEM Block Collection** (do NOT use Author Kit
+  with this template) → creates the same sample pages.
+
+**Publish** the seeded pages (Traverse → Bulk Operations → **Publish**; *confirm before publishing — it's public*),
+then **verify** `https://main--<demo>--<owner>.aem.page/` returns HTTP 200 with the homepage.
+
+## Phase 5 — Fork: state your intention
+
+The base is done and the demo has default content. Ask which path the user wants:
 
 ### Path A — Modernize a real site
 > Migrate an existing website's pages, design, and content into this repo.
 
 ➡️ Continue with the **`modernize-with-aemcoder`** skill. This skill ends here.
 
-### Path B — Start from sample pages and build integrations
-> Get a working sample site to build integrations on (Target, Workfront, etc.).
+### Path B — Build tool integrations
+> Build integrations (Target, Workfront, etc.) on the default content seeded in Phase 4.
 
-1. **Content gate** — check whether the site has content: list the DA sources and fetch the preview URL for a real
-   page (HTTP 200), or ask the user. If content already exists, skip to step 4.
-2. **Populate sample content** — walk `https://da.live/start` → enter the GitHub repo → **Go** → on step 2 select
-   **AEM Block Collection** (do NOT use Author Kit with this template) → creates sample pages.
-3. **Publish** the sample pages (Traverse → Bulk Operations → **Publish**; *confirm before publishing*).
-4. ➡️ Continue with an integration skill (e.g. **`add-adobe-target`**). When it works, finish with
-   **`merge-back-to-base-template`**.
+➡️ Continue with an integration skill (e.g. **`add-adobe-target`**). When it works, finish with
+**`merge-back-to-base-template`**.
 
 ## Troubleshooting
 

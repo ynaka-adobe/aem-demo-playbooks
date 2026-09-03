@@ -19,7 +19,7 @@ AEM Edge Delivery demos. This is **setup only**; building a demo is the `create-
 - Go one section at a time and confirm before moving on. Keep language plain.
 - The user creates their own GitHub account themselves — you guide, you don't do it for them. Never ask the user to
   paste passwords or tokens into chat.
-- At the end, give a short ✅ readiness summary, then recommend the next skill based on intent (see step 3).
+- At the end, give a short ✅ readiness summary, then recommend the next skill based on intent (see step 4).
 
 ## 1. Check local tools
 
@@ -45,11 +45,24 @@ Install anything missing:
 > directly (its **Users** step, in the `create-eds-repo` skill), which is what the org name used to be a workaround
 > for. A GitHub org is optional; if used, any name works.
 
-## 3. Readiness check & next step
+## 3. Connect the AEM DA content tools (recommended)
+
+Connect the **AEM DA** MCP so Claude can read and seed **Document Authoring** content directly — e.g. copy default
+content into a new demo, or seed a blank site — without manual browser steps.
+
+- Server: **AEM DA - Prod** → `https://mcp.adobeaemcloud.com/adobe/mcp/da`
+- Authenticate it via your **claude.ai connector settings** (or `/mcp` in an interactive Claude Code terminal).
+  Claude can't run the sign-in flow for the user — direct them to do it.
+- When it shows **connected**, the `da_*` tools (list / copy / create content) become available.
+
+Optional but recommended: without it, content seeding falls back to the browser (`da.live`).
+
+## 4. Readiness check & next step
 
 Confirm and summarize as a ✅ checklist:
 - git, Node, and the AEM CLI are installed.
 - A GitHub account exists (Adobe email recommended, not required).
+- *(Recommended)* the AEM DA MCP is connected (for content seeding).
 
 Then ask what the user wants to do next and recommend:
 - **"I just want to build a demo"** (most people) → the **`create-eds-repo`** skill.

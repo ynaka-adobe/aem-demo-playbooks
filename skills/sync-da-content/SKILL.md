@@ -98,6 +98,7 @@ View your config at: `https://da.live/config#/your-org/your-site/`
 | Config tabs not showing | Hard refresh (Cmd+Shift+R) the DA config page |
 | Credentials sheet empty | Verify the source sheets exist in da-demo-kit |
 | Action returns 401 (config PUT) | The config write needs an **IMS S2S** Bearer, and the target org's `permissions` sheet must grant that identity `write` on `CONFIG` — see "One-time setup" above. A helix Site Admin key won't work here. |
+| DA MCP failing / `da_*` tools erroring or hanging / "server disconnected" | **Disconnect the AEM DA connector and reconnect it** (claude.ai connector settings, or `/mcp` in an interactive terminal), then retry. A stale/expired connection is the usual cause. |
 
 ## Next Steps
 

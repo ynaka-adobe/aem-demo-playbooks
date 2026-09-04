@@ -130,9 +130,32 @@ done
 For many pages, use the admin **bulk** job (`POST …/live/<owner>/<site>/main/*` with a paths payload) instead of a
 loop. *Publishing is outward-facing — confirm before running it.*
 
-## Phase 5 — Fork: state your intention
+## Phase 5 — Sync config (from da-demo-kit)
 
-The base is done and the demo has default content. Ask which path the user wants:
+Content is only half the setup — the site also needs the **config store** (data, library, apps, prepare) so blocks,
+tools, and the Target/Workfront integrations are wired up. Do this **now, after content and before the fork**, so
+both paths start from a fully-configured site.
+
+Config is a **`PUT` to `admin.da.live/config`** (not a content write), so — unlike content — it needs a DA
+credential **and** a per-org permission grant. This is what the **`sync-da-content`** skill / the `sync-config`
+action handle. Two prerequisites:
+
+1. **Grant your org `write`** — in your org's `da.live/config` → **`permissions`** sheet, add the four rows (both
+   IMS orgs, `write` on `CONFIG` and `/ + **`). Exact rows + screenshot are in the **`sync-da-content`** skill. Skip
+   if already granted — org-level grants cover every site in the org.
+2. **Run the config sync** — trigger `sync-config` (the server-side action reads da-demo-kit's config with its
+   stored `DA_Token` and PUTs it to your site).
+
+Verify: open `https://da.live/config#/<owner>/<site>/` — the **data / library / apps / prepare** tabs should be
+present.
+
+> **Why content can succeed while config fails:** content writes go through your own DA connector (no key needed);
+> **config needs the permission grant + credential**. A **403** on the config write = the permissions grant is
+> missing (step 1). Both content *and* config must be done before the fork.
+
+## Phase 6 — Fork: state your intention
+
+The base is done and the site has default content **and** config. Ask which path the user wants:
 
 ### Path A — Modernize a real site
 > Migrate an existing website's pages, design, and content into this repo.

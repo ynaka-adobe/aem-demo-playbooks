@@ -59,17 +59,24 @@ the org's DA **`permissions`** sheet:
 
 **Two options:**
 
+These are **Adobe I/O Runtime** actions (on `adobeioruntime.net`) — **not** the EDS site. The `…hlx.live/actions/…`
+URLs are dead (that domain is deprecated/blocked; EDS sites don't front I/O Runtime).
+
 ### Option 1: Full Config Sync (Recommended)
 Syncs all default configuration in one call:
 ```
-https://da-demo-kit.hlx.live/actions/sync-config?targetOrg=your-org&targetRepo=your-site
+https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-config?targetOrg=your-org&targetRepo=your-site
 ```
 
 ### Option 2: Individual Sheet Sync
 Sync specific sheets as needed:
 ```
-https://da-demo-kit.hlx.live/actions/sync-da-sheet?targetOrg=your-org&targetRepo=your-site&sheetPath=.da/adobe-target.json
+https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-da-sheet?targetOrg=your-org&targetRepo=your-site&sheetPath=.da/adobe-target.json
 ```
+
+> **Runtime env required:** the action returns `401 "Missing authentication"` until **`ADMIN_API_KEY`** is set on the
+> da-demo-kit App Builder runtime (so it can read `DA_Token` from `.da/adobe-da`) — or the IMS S2S vars as fallback.
+> Verified live: with no env set, the deployed action returns exactly that 401.
 
 > ⚠️ **These endpoints are Adobe I/O Runtime actions — they only work if the action is *deployed and reachable*.**
 > EDS content sites don't serve `/actions/…` by default. If they return **404**, the action isn't deployed (see
@@ -100,7 +107,8 @@ A **201/200** = config synced. A **403** = the target org is missing the permiss
 
 ## Web UI Alternative
 
-Navigate to: `https://da-demo-kit.hlx.live/sync-content`
+Navigate to the `sync-content` page on da-demo-kit's **current** domain (the `hlx.live` one is dead):
+`https://main--da-demo-kit--ynaka-adobe.aem.page/sync-content` (or `.aem.live` once published)
 
 Fill in:
 - **Organization** — your GitHub org

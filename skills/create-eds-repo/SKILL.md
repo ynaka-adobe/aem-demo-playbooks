@@ -143,8 +143,8 @@ action handle. Two prerequisites:
 1. **Grant your org `write`** — in your org's `da.live/config` → **`permissions`** sheet, add the four rows (both
    IMS orgs, `write` on `CONFIG` and `/ + **`). Exact rows + screenshot are in the **`sync-da-content`** skill. Skip
    if already granted — org-level grants cover every site in the org.
-2. **Run the config sync** — trigger `sync-config` (the server-side action reads da-demo-kit's config with its
-   stored `DA_Token` and PUTs it to your site).
+2. **Run the config sync** — trigger `sync-config` (the server-side action mints an IMS token from its stored S2S
+   credential, reads da-demo-kit's config with it, and PUTs it to your site).
 
 Verify: open `https://da.live/config#/<owner>/<site>/` — the **data / library / apps / prepare** tabs should be
 present.

@@ -74,9 +74,11 @@ Sync specific sheets as needed:
 https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-da-sheet?targetOrg=your-org&targetRepo=your-site&sheetPath=.da/adobe-target.json
 ```
 
-> **Runtime env required:** the action returns `401 "Missing authentication"` until **`ADMIN_API_KEY`** is set on the
-> da-demo-kit App Builder runtime (so it can read `DA_Token` from `.da/adobe-da`) — or the IMS S2S vars as fallback.
-> Verified live: with no env set, the deployed action returns exactly that 401.
+> **Runtime env required:** the action returns `401 "Missing authentication"` until the **IMS S2S** credential is set
+> on the da-demo-kit App Builder runtime — **`IMS_CLIENT_ID`**, **`IMS_CLIENT_SECRET`**, **`IMS_SCOPES`** (declared as
+> action `inputs` in `app.config.yaml` so they reach `process.env`). The action exchanges them for a fresh IMS Bearer
+> per call (`grant_type=client_credentials`) and uses it for both the source read and the target `PUT` — nothing
+> long-lived is stored. Verified live: with the S2S vars set, `sync-config` returns `{"success":true}`.
 
 > ⚠️ **These endpoints are Adobe I/O Runtime actions — they only work if the action is *deployed and reachable*.**
 > EDS content sites don't serve `/actions/…` by default. If they return **404**, the action isn't deployed (see

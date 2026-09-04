@@ -57,32 +57,55 @@ the org's DA **`permissions`** sheet:
 
 ## How to Use
 
-**Two options:**
+> **MANDATORY — Claude calls the endpoint; the user does not.** These are **Adobe I/O Runtime** actions (on
+> `adobeioruntime.net`). **You (Claude) invoke them yourself** with your own tools (`Bash` + `curl`, or `WebFetch`)
+> and report the result — do **NOT** paste a URL and tell the user to click or run it. The user only supplies their
+> **target org and site**; you make the call, parse the JSON, and confirm `{"success":true}` (or surface the error).
+> Only if you have no outbound-call capability at all, fall back to the **Web UI** at the bottom.
 
-These are **Adobe I/O Runtime** actions (on `adobeioruntime.net`) — **not** the EDS site. The `…hlx.live/actions/…`
-URLs are dead (that domain is deprecated/blocked; EDS sites don't front I/O Runtime).
+These are I/O Runtime actions (on `adobeioruntime.net`) — **not** the EDS site. The `…hlx.live/actions/…` URLs are
+dead (that domain is deprecated/blocked; EDS sites don't front I/O Runtime).
 
-### Option 1: Full Config Sync (Recommended)
-Syncs all default configuration in one call:
+### Full config sync (default) — Claude runs this
+Syncs all default configuration (data, library, apps, prepare) in one call. **You run it:**
+```bash
+curl -s "https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-config?targetOrg=<owner>&targetRepo=<site>"
 ```
-https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-config?targetOrg=your-org&targetRepo=your-site
+Then confirm the response is `{"success":true, ...}` and tell the user it synced (or surface the error below).
+
+### Credential sheets (REQUIRED) — Claude runs both
+`sync-config` copies the **config store** (data/library/apps/prepare) but **not** the `.da/*` credential sheets —
+those are DA content sources, so you must sync them separately. **Always run both of these** so the target has the
+Target and Workfront credentials:
+```bash
+curl -s "https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-da-sheet?targetOrg=<owner>&targetRepo=<site>&sheetPath=.da/adobe-target.json"
+curl -s "https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-da-sheet?targetOrg=<owner>&targetRepo=<site>&sheetPath=.da/adobe-workfront.json"
+```
+Confirm each returns `{"success":true}`. The target's `.da/` folder should then contain `adobe-target.json` and
+`adobe-workfront.json`.
+
+> **Never sync `.da/adobe-da.json`** — that's da-demo-kit's private `DA_Token` sheet. It must stay in the source
+> only; copying it into a target repo would leak the credential.
+>
+> **DA MCP alternative:** if the runtime action is unavailable but the DA connector is, copy the two sheets directly
+> — `da_get_source` each from `ynaka-adobe/da-demo-kit` (`.da/adobe-target.json`, `.da/adobe-workfront.json`), then
+> `da_create_source` to `<owner>/<site>` at the same paths. (Again: **not** `.da/adobe-da.json`.)
+
+### Individual sheet sync — Claude runs this
+Sync any other single `.da/*.json` sheet as needed:
+```bash
+curl -s "https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-da-sheet?targetOrg=<owner>&targetRepo=<site>&sheetPath=.da/<sheet>.json"
 ```
 
-### Option 2: Individual Sheet Sync
-Sync specific sheets as needed:
-```
-https://332794-dademokitappbuilder.adobeioruntime.net/api/v1/web/da-demo-kit/sync-da-sheet?targetOrg=your-org&targetRepo=your-site&sheetPath=.da/adobe-target.json
-```
+> **Runtime env required (maintainer, one-time):** the action returns `401 "Missing authentication"` until the
+> **IMS S2S** credential is set on the da-demo-kit App Builder runtime — **`IMS_CLIENT_ID`**, **`IMS_CLIENT_SECRET`**,
+> **`IMS_SCOPES`** (declared as action `inputs` in `app.config.yaml`). The action exchanges them for a fresh IMS
+> Bearer per call (`grant_type=client_credentials`) and uses it for both the source read and the target `PUT` —
+> nothing long-lived is stored. Verified live: with the S2S vars set, `sync-config` returns `{"success":true}`.
 
-> **Runtime env required:** the action returns `401 "Missing authentication"` until the **IMS S2S** credential is set
-> on the da-demo-kit App Builder runtime — **`IMS_CLIENT_ID`**, **`IMS_CLIENT_SECRET`**, **`IMS_SCOPES`** (declared as
-> action `inputs` in `app.config.yaml` so they reach `process.env`). The action exchanges them for a fresh IMS Bearer
-> per call (`grant_type=client_credentials`) and uses it for both the source read and the target `PUT` — nothing
-> long-lived is stored. Verified live: with the S2S vars set, `sync-config` returns `{"success":true}`.
-
-> ⚠️ **These endpoints are Adobe I/O Runtime actions — they only work if the action is *deployed and reachable*.**
-> EDS content sites don't serve `/actions/…` by default. If they return **404**, the action isn't deployed (see
-> Troubleshooting) — use the **interim direct method** below to complete the config sync without the action.
+> ⚠️ **The action only works if it's *deployed and reachable*.** A **404** (`"The requested resource does not
+> exist"`) means the action isn't deployed — see Troubleshooting. A **403** means the target org is missing the
+> permissions grant (see "One-time setup"). Only if *you* can't make outbound calls at all, use the **Web UI** below.
 
 ## Interim: direct config sync (no action) — maintainer only
 
@@ -107,8 +130,9 @@ rm -f /tmp/src-config.json
 A **201/200** = config synced. A **403** = the target org is missing the permissions grant (fix that first).
 *(This is the exact flow validated live: 403 → 201.)*
 
-## Web UI Alternative
+## Web UI (fallback only — if Claude can't call the endpoint)
 
+*Prefer the Claude-invoked `curl` above. Use this only when you have no way to make the outbound call yourself.*
 Navigate to the `sync-content` page on da-demo-kit's **current** domain (the `hlx.live` one is dead):
 `https://main--da-demo-kit--ynaka-adobe.aem.page/sync-content` (or `.aem.live` once published)
 

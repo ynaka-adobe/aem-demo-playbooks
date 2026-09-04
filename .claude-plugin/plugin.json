@@ -1,6 +1,6 @@
 {
   "name": "aem-demo-playbooks",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "Guided playbooks for building AEM Edge Delivery (EDS) demos: environment setup, reusable base templates, creating a demo repo, modernizing a real site with the Experience Modernization Agent (aemcoder), adding integrations like Adobe Target, syncing shared content, and merging features back into your base template.",
   "author": {
     "name": "Adobe XSC"

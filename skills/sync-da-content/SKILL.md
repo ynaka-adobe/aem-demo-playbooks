@@ -33,15 +33,20 @@ each target org authorizes config writes once, using an **IMS Server-to-Server (
 the org's DA **`permissions`** sheet:
 
 1. Create an **IMS S2S** credential in the Adobe Developer Console (one time, reused across orgs).
-2. In the **target org's** `da.live/config` → **`permissions`** sheet, add rows granting that identity `write`, then
-   **Save**:
+2. In the **target org's** `da.live/config` → **`permissions`** sheet, add **four rows** granting `write` to **both
+   IMS orgs** the sync identity resolves through, then **Save**:
 
-   | path | groups | actions |
-   |---|---|---|
-   | `CONFIG` | `<technical-account-email>` | `write` |
-   | `/ + **` | `<technical-account-email>` | `write` |
+   | path | groups | actions | comments |
+   |---|---|---|---|
+   | `CONFIG` | `21BD487E5F2280130A495ECC` | `write` | ACS Customer Solutions Services Marketing (Yuji) |
+   | `/ + **` | `21BD487E5F2280130A495ECC` | `write` | ACS Customer Solutions Services Marketing (Yuji) |
+   | `CONFIG` | `EE9332B3547CC74E0A4C98A1` | `write` | Adobe Inc. |
+   | `/ + **` | `EE9332B3547CC74E0A4C98A1` | `write` | Adobe Inc. |
 
-   ![DA config permissions — CONFIG + content write](assets/da-config-permissions.png)
+   **Both** IMS orgs are required (ACS Marketing **and** Adobe Inc.) — one alone is not enough. `groups` holds **IMS
+   org IDs**, not emails. This exact grant took the live test from **403 → 201**.
+
+   ![DA config permissions — CONFIG + content write for both IMS orgs](assets/da-config-permissions.png)
 
 3. The sync mints a token from the S2S credential and uses it as the Bearer for the config `PUT`.
 

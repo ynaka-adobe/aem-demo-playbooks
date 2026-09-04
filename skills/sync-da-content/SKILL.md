@@ -71,6 +71,33 @@ Sync specific sheets as needed:
 https://da-demo-kit.hlx.live/actions/sync-da-sheet?targetOrg=your-org&targetRepo=your-site&sheetPath=.da/adobe-target.json
 ```
 
+> ⚠️ **These endpoints are Adobe I/O Runtime actions — they only work if the action is *deployed and reachable*.**
+> EDS content sites don't serve `/actions/…` by default. If they return **404**, the action isn't deployed (see
+> Troubleshooting) — use the **interim direct method** below to complete the config sync without the action.
+
+## Interim: direct config sync (no action) — maintainer only
+
+Use this when the `sync-config` action is down/404 and you (the maintainer) have the source **`DA_Token`**. It does
+exactly what the action does, from the command line. *End users can't use this — they don't have `DA_Token`; they
+rely on the deployed action.*
+
+Prereqs: the target org's `permissions` sheet grants the two IMS orgs `write` (above), and `DA_Token` is in an env
+var / file — **never pasted into chat**.
+
+```bash
+# DA_TOKEN in a file (e.g. from the .da/adobe-da sheet); never echo it
+DA=$(cat ~/.aem/da_token)
+# 1. read da-demo-kit config; 2. PUT it to the target site
+curl -sf -H "Authorization: Bearer $DA" \
+  https://admin.da.live/config/ynaka-adobe/da-demo-kit/ > /tmp/src-config.json
+curl -sf -X PUT -H "Authorization: Bearer $DA" \
+  --data-urlencode "config@/tmp/src-config.json" \
+  https://admin.da.live/config/<owner>/<site>/
+rm -f /tmp/src-config.json
+```
+A **201/200** = config synced. A **403** = the target org is missing the permissions grant (fix that first).
+*(This is the exact flow validated live: 403 → 201.)*
+
 ## Web UI Alternative
 
 Navigate to: `https://da-demo-kit.hlx.live/sync-content`
@@ -99,6 +126,7 @@ View your config at: `https://da.live/config#/your-org/your-site/`
 | Credentials sheet empty | Verify the source sheets exist in da-demo-kit |
 | Action returns 401 (config PUT) | The config write needs an **IMS S2S** Bearer, and the target org's `permissions` sheet must grant that identity `write` on `CONFIG` — see "One-time setup" above. A helix Site Admin key won't work here. |
 | DA MCP failing / `da_*` tools erroring or hanging / "server disconnected" | **Disconnect the AEM DA connector and reconnect it** (claude.ai connector settings, or `/mcp` in an interactive terminal), then retry. A stale/expired connection is the usual cause. |
+| **`/actions/sync-config` (or `/sync-content`) returns 404** | The I/O Runtime action **isn't deployed/reachable** — EDS sites don't serve `/actions/…` by default. **Deploy it:** `aio app deploy` the `actions/` from da-demo-kit to your I/O Runtime namespace, set env (`ADMIN_API_KEY`, etc.), then point this skill's URLs at the real `…adobeioruntime.net/api/v1/web/…` endpoint. **To unblock now:** use the **interim direct method** above (maintainer + `DA_Token`). |
 
 ## Next Steps
 

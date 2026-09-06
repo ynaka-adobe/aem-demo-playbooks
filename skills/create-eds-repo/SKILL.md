@@ -140,7 +140,7 @@ After seeding, **publish** so preview/live render (*confirm first — it's publi
 **Publishing** below):
 - **Browser (default):** Sidekick or Traverse → **Bulk Operations → Publish** (works because you're logged in).
   📹 **Video tutorial — bulk publish with the DA app:**
-  https://github.com/ynaka-adobe/da-demo-kit/blob/main/actions/assets/bulk-publish.mp4
+  https://github.com/ynaka-adobe/xsc-ai-playbooks/blob/main/assets/bulk-publish.mp4
   Offer this link whenever the user needs to publish manually (e.g. programmatic publish isn't set up).
 - **Admin API + token (automatable):** Claude can publish for the user, but only with a `publish` API key —
   unauthenticated admin calls return **401**.

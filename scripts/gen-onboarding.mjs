@@ -92,21 +92,22 @@ for (const [skill, page] of Object.entries(MAP)) {
     continue;
   }
   const generated = transform(skill, readFileSync(srcPath, 'utf8'));
-  const destDir = join(OUT_ROOT, page);
-  const destPath = join(destDir, 'ONBOARDING.md');
+  // Flat, topic-named files at the repo root (e.g. create-eds-repo.md) so they're
+  // distinguishable in Claude's file list — not seven identical ONBOARDING.md.
+  const destPath = join(OUT_ROOT, `${page}.md`);
   const prev = existsSync(destPath) ? readFileSync(destPath, 'utf8') : null;
 
   if (prev !== generated) {
     changed++;
     if (CHECK) {
-      console.error(`✗ stale: ${page}/ONBOARDING.md`);
+      console.error(`✗ stale: ${page}.md`);
     } else {
-      mkdirSync(destDir, { recursive: true });
+      mkdirSync(OUT_ROOT, { recursive: true });
       writeFileSync(destPath, generated);
-      console.log(`✓ ${skill}  ->  ${page}/ONBOARDING.md`);
+      console.log(`✓ ${skill}  ->  ${page}.md`);
     }
   } else {
-    console.log(`= ${page}/ONBOARDING.md (unchanged)`);
+    console.log(`= ${page}.md (unchanged)`);
   }
 }
 

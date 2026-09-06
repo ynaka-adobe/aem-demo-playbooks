@@ -1,5 +1,20 @@
 # AEM Demo Playbooks — Claude Code Plugin
 
+> # ⚠️ MOVED / DEPRECATED
+> This repo has been superseded by the **XSC AI Playbooks monorepo**, where it now lives as the
+> **`aem-edge-delivery`** plugin (one of several product toolsets, alongside an `xsc` concierge and, later,
+> `aem-assets` / `aem-guides`).
+>
+> **New home:** https://github.com/ynaka-adobe/xsc-ai-playbooks
+> **Install now:**
+> ```bash
+> claude plugin marketplace add ynaka-adobe/xsc-ai-playbooks
+> claude plugin install xsc@ynaka-adobe
+> claude plugin install aem-edge-delivery@ynaka-adobe
+> ```
+> The old `ynaka-adobe/aem-demo-playbooks` marketplace/plugin is no longer maintained. Catalog:
+> https://ynaka-adobe.github.io/xsc-ai-playbooks/
+
 Guided playbooks for building **AEM Edge Delivery (EDS) demos**, packaged as install-once skills. No more copying
 `.md` files into chat — install the plugin, then trigger a playbook by slash command or by describing what you want
 ("help me build a demo"). **No coding experience required.**

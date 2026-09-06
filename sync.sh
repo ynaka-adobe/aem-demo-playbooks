@@ -7,6 +7,18 @@ set -e
 
 MARKETPLACE="ynaka-adobe"
 PLUGIN="aem-demo-playbooks"
+XSC="../xsc-ai-playbooks"
+
+echo "→ Regenerating paste-in playbooks (xsc-ai-playbooks) from the skills…"
+node scripts/gen-onboarding.mjs
+if [ -d "$XSC" ] && [ -n "$(git -C "$XSC" status --porcelain)" ]; then
+  git -C "$XSC" add -A
+  git -C "$XSC" commit -m "Regenerate paste-in playbooks from plugin skills"
+  git -C "$XSC" push
+  echo "  ✓ xsc-ai-playbooks synced & pushed"
+else
+  echo "  = xsc-ai-playbooks already up to date"
+fi
 
 echo "→ Pushing to GitHub…"
 git push

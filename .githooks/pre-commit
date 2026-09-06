@@ -20,13 +20,6 @@ rm -f "$MANIFEST.bak"
 git add "$MANIFEST"
 echo "pre-commit: bumped plugin version $cur -> $new"
 
-# Keep the paste-in playbooks (xsc-ai-playbooks) in sync with the canonical skills.
-# Best-effort: skip quietly if the sibling repo or node isn't present; never block
-# the commit. The regenerated files live in a *separate* repo, so they can't be
-# staged here — commit/push them from there, or just run ./sync.sh (which does).
-XSC="../xsc-ai-playbooks"
-if [ -d "$XSC" ] && command -v node >/dev/null 2>&1 && [ -f scripts/gen-onboarding.mjs ]; then
-  if node scripts/gen-onboarding.mjs >/dev/null 2>&1 && [ -n "$(git -C "$XSC" status --porcelain 2>/dev/null)" ]; then
-    echo "pre-commit: regenerated paste-in playbooks in $XSC — commit/push them there or run ./sync.sh"
-  fi
-fi
+# NOTE: this repo is DEPRECATED — moved to the xsc-ai-playbooks monorepo as the
+# aem-edge-delivery plugin. The old cross-repo paste-in regeneration was REMOVED so
+# committing here can no longer touch ../xsc-ai-playbooks (which now owns generation).
